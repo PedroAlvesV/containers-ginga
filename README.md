@@ -4,7 +4,7 @@ Este repositório contém as imagens Docker e os scripts necessários para a exe
 
 Os módulos de gestos e expressão facial fazem uso de câmera, e por isso, uma imagem adicional de **câmera virtual** foi criada para suportar esses módulos.
 
-## Estrutura do repositório
+## Arquivos
 
 - **ginga-img**: Imagem Docker do Ginga.
 - **vrecog-img**: Imagem Docker do módulo de reconhecimento de voz.
@@ -21,11 +21,14 @@ Os módulos de gestos e expressão facial fazem uso de câmera, e por isso, uma 
 
 ## Instruções de uso
 
-### Passo 0: Clonar o repositório
+### Passo 0: Clonar o repositório e baixar as imagens no drive
 
+- Repositório
 ```bash
 $ git clone https://github.com/PedroAlvesV/containers-ginga.git
 ```
+
+- Drive com as imagens: [https://drive.google.com/drive/folders/1ehNt36P37NvNwqb88j0JYsiYcMGNC9ug?usp=sharing](https://drive.google.com/drive/folders/1ehNt36P37NvNwqb88j0JYsiYcMGNC9ug?usp=sharing)
 
 ### Passo 1: Carregar as Imagens Docker
 
