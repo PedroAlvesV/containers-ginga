@@ -1,0 +1,99 @@
+services:
+  ginga:
+    image: ginga
+    container_name: ginga
+    restart: no
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${ABSPATH_APP_DIR}:/ginga/app
+      - ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native
+      - ~/.config/pulse/cookie:/root/.config/pulse/cookie
+    devices:
+      - /dev/snd
+    group_add:
+      - ${GROUP_AUDIO_ID}
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    stdin_open: true
+    tty: true
+    networks:
+      - mqttnetwork
+    
+  handpose:
+    image: handpose
+    container_name: handpose
+    restart: no
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - MQTT_BROKER=ginga
+      - MQTT_PORT=1883
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    devices:
+      - /dev/video0:/dev/video0
+    depends_on:
+      - ginga
+    networks:
+      - mqttnetwork
+      
+  frecog:
+    image: frecog
+    container_name: frecog
+    restart: no
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - MQTT_BROKER=ginga
+      - MQTT_PORT=1883
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    devices:
+      - /dev/video0:/dev/video0
+    depends_on:
+      - ginga
+    networks:
+      - mqttnetwork
+  
+  vcam-modules:
+    image: vcam-modules
+    container_name: vcam-modules
+    restart: no
+    environment:
+      - DISPLAY=unix$DISPLAY
+      - MQTT_BROKER=ginga
+      - MQTT_PORT=1883
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    devices:
+      - /dev/video0:/dev/video0
+    depends_on:
+      - ginga
+    networks:
+      - mqttnetwork
+      
+  vrecog:
+    image: vrecog
+    container_name: vrecog
+    restart: no
+    environment:
+      - MQTT_BROKER=ginga
+      - MQTT_PORT=1883
+      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
+    volumes:
+      - ${XDG_RUNTIME_DIR}/pulse/native:${XDG_RUNTIME_DIR}/pulse/native
+      - ~/.config/pulse/cookie:/root/.config/pulse/cookie
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - ${GROUP_AUDIO_ID}
+    depends_on:
+      - ginga
+    networks:
+      - mqttnetwork
+
+networks:
+  mqttnetwork:
+    driver: bridge
